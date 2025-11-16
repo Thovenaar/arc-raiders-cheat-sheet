@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import Header from "./components/Header";
+import Header, { StickySearchBar } from "./components/Header";
 import CategoryFilter from "./components/CategoryFilter";
 import CategorySection from "./components/CategorySection";
 import QuickTips from "./components/QuickTips";
@@ -142,6 +142,8 @@ function App() {
     <div className="min-h-screen bg-dark-bg text-white">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Header onSearch={setSearchTerm} />
+
+        <StickySearchBar onSearch={setSearchTerm} />
 
         <CategoryFilter
           selectedCategories={selectedCategories}
