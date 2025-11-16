@@ -5,21 +5,69 @@ interface ItemCardProps {
   item: Item;
 }
 
-const getCategoryColor = (category: string): string => {
-  const colors: Record<string, string> = {
-    ARC: "bg-purple-600",
-    Residential: "bg-blue-600",
-    Medical: "bg-green-600",
-    Industrial: "bg-yellow-600",
-    Security: "bg-red-600",
-    Electrical: "bg-cyan-600",
-    Mechanical: "bg-orange-600",
-    Commercial: "bg-pink-600",
-    Technological: "bg-indigo-600",
-    Exodus: "bg-teal-600",
-    Nature: "bg-lime-600"
+const getCategoryStyle = (category: string) => {
+  const styles: Record<string, { gradient: string; border: string; glow: string }> = {
+    ARC: {
+      gradient: "linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6d28d9 100%)",
+      border: "#a855f7",
+      glow: "0 0 8px rgba(168, 85, 247, 0.4)"
+    },
+    Residential: {
+      gradient: "linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)",
+      border: "#60a5fa",
+      glow: "0 0 8px rgba(96, 165, 250, 0.4)"
+    },
+    Medical: {
+      gradient: "linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)",
+      border: "#34d399",
+      glow: "0 0 8px rgba(52, 211, 153, 0.4)"
+    },
+    Industrial: {
+      gradient: "linear-gradient(135deg, #eab308 0%, #ca8a04 50%, #a16207 100%)",
+      border: "#facc15",
+      glow: "0 0 8px rgba(250, 204, 21, 0.4)"
+    },
+    Security: {
+      gradient: "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)",
+      border: "#f87171",
+      glow: "0 0 8px rgba(248, 113, 113, 0.4)"
+    },
+    Electrical: {
+      gradient: "linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%)",
+      border: "#22d3ee",
+      glow: "0 0 8px rgba(34, 211, 238, 0.4)"
+    },
+    Mechanical: {
+      gradient: "linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%)",
+      border: "#fb923c",
+      glow: "0 0 8px rgba(251, 146, 60, 0.4)"
+    },
+    Commercial: {
+      gradient: "linear-gradient(135deg, #ec4899 0%, #db2777 50%, #be185d 100%)",
+      border: "#f472b6",
+      glow: "0 0 8px rgba(244, 114, 182, 0.4)"
+    },
+    Technological: {
+      gradient: "linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%)",
+      border: "#818cf8",
+      glow: "0 0 8px rgba(129, 140, 248, 0.4)"
+    },
+    Exodus: {
+      gradient: "linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%)",
+      border: "#5eead4",
+      glow: "0 0 8px rgba(94, 234, 212, 0.4)"
+    },
+    Nature: {
+      gradient: "linear-gradient(135deg, #84cc16 0%, #65a30d 50%, #4d7c0f 100%)",
+      border: "#a3e635",
+      glow: "0 0 8px rgba(163, 230, 53, 0.4)"
+    }
   };
-  return colors[category] || "bg-gray-600";
+  return styles[category] || {
+    gradient: "linear-gradient(135deg, #6b7280 0%, #4b5563 50%, #374151 100%)",
+    border: "#9ca3af",
+    glow: "0 0 8px rgba(156, 163, 175, 0.4)"
+  };
 };
 
 export default function ItemCard({ item }: ItemCardProps) {
@@ -106,15 +154,32 @@ export default function ItemCard({ item }: ItemCardProps) {
       </div>
 
       {/* Category Badges */}
-      <div className="flex flex-wrap gap-1 mb-3">
-        {item.category.map((cat) => (
-          <span
-            key={cat}
-            className={`${getCategoryColor(cat)} text-white text-xs px-2 py-1 rounded`}
-          >
-            {cat}
-          </span>
-        ))}
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {item.category.map((cat) => {
+          const style = getCategoryStyle(cat);
+          return (
+            <span
+              key={cat}
+              className="text-white text-[10px] px-2 py-0.5 rounded font-medium relative overflow-hidden transition-all duration-200 hover:scale-105 cursor-default"
+              style={{
+                background: style.gradient,
+                border: `1px solid ${style.border}`,
+                boxShadow: style.glow,
+                textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = `${style.glow}, 0 0 12px ${style.border}`;
+                e.currentTarget.style.transform = "scale(1.05)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = style.glow;
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+            >
+              <span className="relative z-10">{cat}</span>
+            </span>
+          );
+        })}
       </div>
 
       {/* Weight and Value */}
