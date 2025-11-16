@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Header from "./components/Header";
 import CategoryFilter from "./components/CategoryFilter";
 import CategorySection from "./components/CategorySection";
@@ -16,6 +16,11 @@ import type { Item } from "./types";
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    "keep-for-quests": true,
+    "keep-for-projects": true,
+    "safe-to-recycle": true,
+  });
 
   const handleToggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
@@ -79,6 +84,60 @@ function App() {
     filteredSafeToRecycle.length +
     filteredWorkshopUpgrades.reduce((sum, wu) => sum + wu.items.length, 0);
 
+  const toggleSection = (sectionKey: string) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey]
+    }));
+  };
+
+  const getAllSectionKeys = () => {
+    return [
+      "keep-for-quests",
+      "keep-for-projects",
+      "safe-to-recycle",
+      ...filteredWorkshopUpgrades.map((wu, index) => `workshop-${wu.bench}-${wu.level}-${index}`)
+    ];
+  };
+
+  const collapseAll = () => {
+    const allKeys = getAllSectionKeys();
+    const newState: Record<string, boolean> = {};
+    allKeys.forEach((key) => {
+      newState[key] = false;
+    });
+    setExpandedSections(newState);
+  };
+
+  const expandAll = () => {
+    const allKeys = getAllSectionKeys();
+    const newState: Record<string, boolean> = {};
+    allKeys.forEach((key) => {
+      newState[key] = true;
+    });
+    setExpandedSections(newState);
+  };
+
+  // Initialize workshop section states when they appear
+  useEffect(() => {
+    const workshopKeys = filteredWorkshopUpgrades.map((wu, index) => `workshop-${wu.bench}-${wu.level}-${index}`);
+    setExpandedSections((prev) => {
+      const updated = { ...prev };
+      let changed = false;
+      workshopKeys.forEach((key) => {
+        if (updated[key] === undefined) {
+          updated[key] = true;
+          changed = true;
+        }
+      });
+      return changed ? updated : prev;
+    });
+  }, [filteredWorkshopUpgrades]);
+
+  const allSectionKeys = getAllSectionKeys();
+  const allCollapsed = allSectionKeys.every((key) => expandedSections[key] === false);
+  const allExpanded = allSectionKeys.every((key) => expandedSections[key] === true);
+
   return (
     <div className="min-h-screen bg-dark-bg text-white">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -96,34 +155,54 @@ function App() {
           </div>
         )}
 
+        <div className="mb-6 flex gap-2">
+          <button
+            onClick={allCollapsed ? expandAll : collapseAll}
+            className="px-4 py-2 bg-dark-card border border-dark-border hover:border-accent-orange text-white rounded-lg transition-all duration-200 text-sm font-medium"
+          >
+            {allCollapsed ? "Expand All" : "Collapse All"}
+          </button>
+        </div>
+
         <QuickTips tips={quickTips} />
 
         <CategorySection
           title="Keep for Quests"
           description="Quest-critical items that you should save"
           items={filteredKeepForQuests}
+          isExpanded={expandedSections["keep-for-quests"]}
+          onToggle={() => toggleSection("keep-for-quests")}
         />
 
         <CategorySection
           title="Keep for Projects"
           description="Crafting materials needed in large quantities"
           items={filteredKeepForProjects}
+          isExpanded={expandedSections["keep-for-projects"]}
+          onToggle={() => toggleSection("keep-for-projects")}
         />
 
         <CategorySection
           title="Safe to Recycle"
           description="Items that can be safely recycled without worry"
           items={filteredSafeToRecycle}
+          isExpanded={expandedSections["safe-to-recycle"]}
+          onToggle={() => toggleSection("safe-to-recycle")}
         />
 
-        {filteredWorkshopUpgrades.map((wu, index) => (
-          <CategorySection
-            key={`${wu.bench}-${wu.level}-${index}`}
-            title={`${wu.bench.charAt(0).toUpperCase() + wu.bench.slice(1)} - Level ${wu.level}`}
-            description="Workshop upgrade materials"
-            items={wu.items}
-          />
-        ))}
+        {filteredWorkshopUpgrades.map((wu, index) => {
+          const sectionKey = `workshop-${wu.bench}-${wu.level}-${index}`;
+          return (
+            <CategorySection
+              key={sectionKey}
+              title={`${wu.bench.charAt(0).toUpperCase() + wu.bench.slice(1)} - Level ${wu.level}`}
+              description="Workshop upgrade materials"
+              items={wu.items}
+              isExpanded={expandedSections[sectionKey] ?? true}
+              onToggle={() => toggleSection(sectionKey)}
+            />
+          );
+        })}
 
         {totalResults === 0 && (searchTerm || selectedCategories.length > 0) && (
           <div className="text-center py-16">
