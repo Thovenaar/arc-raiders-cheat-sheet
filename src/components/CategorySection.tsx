@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Item } from "../types";
 import ItemCard from "./ItemCard";
 
@@ -8,6 +8,7 @@ interface CategorySectionProps {
   description?: string;
   isExpanded?: boolean;
   onToggle?: () => void;
+  id?: string;
 }
 
 export default function CategorySection({
@@ -15,22 +16,17 @@ export default function CategorySection({
   items,
   description,
   isExpanded: controlledExpanded,
-  onToggle
+  onToggle,
+  id
 }: CategorySectionProps) {
   const [internalExpanded, setInternalExpanded] = useState(true);
   const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded;
-  const handleToggle = onToggle || (() => setInternalExpanded(!internalExpanded));
-
-  useEffect(() => {
-    if (controlledExpanded !== undefined) {
-      setInternalExpanded(controlledExpanded);
-    }
-  }, [controlledExpanded]);
+  const handleToggle = onToggle || (() => setInternalExpanded((prev) => !prev));
 
   if (items.length === 0) return null;
 
   return (
-    <section className="mb-12">
+    <section id={id} className="mb-8 scroll-mt-20">
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
@@ -57,8 +53,8 @@ export default function CategorySection({
 
       <div
         className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-300 overflow-hidden ${isExpanded
-            ? 'max-h-[10000px] opacity-100 mb-0'
-            : 'max-h-0 opacity-0 mb-0 pointer-events-none'
+          ? 'max-h-[10000px] opacity-100 mb-0'
+          : 'max-h-0 opacity-0 mb-0 pointer-events-none'
           }`}
       >
         {items.map((item, index) => (

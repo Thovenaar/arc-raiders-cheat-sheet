@@ -15,9 +15,8 @@ export default function QuickTips({ tips }: QuickTipsProps) {
       >
         <h2 className="text-2xl font-bold text-accent-yellow">Quick Tips</h2>
         <svg
-          className={`w-6 h-6 text-accent-yellow transition-transform ${
-            isExpanded ? "rotate-180" : ""
-          }`}
+          className={`w-6 h-6 text-accent-yellow transition-transform ${isExpanded ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
