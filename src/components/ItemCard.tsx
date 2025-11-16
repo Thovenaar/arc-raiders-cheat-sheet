@@ -132,67 +132,119 @@ export default function ItemCard({ item }: ItemCardProps) {
       }}
     >
       {/* Image Section */}
-      <div className="flex justify-center items-center mb-3 h-24">
+      <div className="flex justify-center items-center mb-3 h-24 relative">
         {item.image && (
-          <img
-            src={getImagePath(item.image)}
-            alt={item.name}
-            className="max-h-full max-w-full object-contain"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
-          />
+          <div className="relative group/image w-full h-full flex items-center justify-center">
+            <div
+              className="absolute inset-0 rounded-lg blur-xl opacity-30 transition-opacity duration-300"
+              style={{
+                background: `radial-gradient(circle, ${tierColor}40 0%, transparent 70%)`,
+              }}
+            />
+            <img
+              src={getImagePath(item.image)}
+              alt={item.name}
+              className="relative max-h-[120px] max-w-[120px] w-auto h-auto object-contain drop-shadow-lg transition-all duration-300 group-hover/image:scale-110 group-hover/image:drop-shadow-2xl"
+              style={{
+                filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.1))",
+              }}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <div
+              className="absolute inset-0 rounded-lg opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, ${tierColor}20 0%, transparent 70%)`,
+                filter: "blur(8px)",
+              }}
+            />
+          </div>
         )}
       </div>
 
-      {/* Title and Quantity */}
-      <div className="flex justify-between items-start mb-3">
-        <h3 className="text-white font-semibold text-lg flex-1">{item.name}</h3>
-        {item.quantity && (
-          <span className="text-accent-yellow font-bold text-sm ml-2">{item.quantity}</span>
-        )}
+      {/* Required Quantity - Top Left */}
+      {item.quantity && (
+        <div className="absolute top-2 left-2 flex items-center gap-1.5 bg-dark-bg/80 backdrop-blur-sm px-2 py-1 rounded border border-accent-yellow/30">
+          <svg className="w-3.5 h-3.5 text-accent-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+          <span className="text-accent-yellow font-bold text-xs">{item.quantity}</span>
+        </div>
+      )}
+
+      {/* Tier Badge - Top Right */}
+      <div className="absolute top-2 right-2">
+        <span
+          className="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wide"
+          style={{
+            backgroundColor: tierColor,
+            color: "#ffffff",
+            textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+          }}
+        >
+          {item.tier}
+        </span>
+      </div>
+
+      {/* Title */}
+      <div className="mb-2">
+        <h3 className="text-white font-semibold text-lg leading-tight pr-16">{item.name}</h3>
       </div>
 
       {/* Category Badges */}
-      <div className="flex flex-wrap gap-1.5 mb-3">
-        {item.category.map((cat) => {
-          const style = getCategoryStyle(cat);
-          return (
-            <span
-              key={cat}
-              className="text-white text-[10px] px-2 py-0.5 rounded font-medium relative overflow-hidden transition-all duration-200 hover:scale-105 cursor-default"
-              style={{
-                background: style.gradient,
-                border: `1px solid ${style.border}`,
-                boxShadow: style.glow,
-                textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = `${style.glow}, 0 0 12px ${style.border}`;
-                e.currentTarget.style.transform = "scale(1.05)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = style.glow;
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-            >
-              <span className="relative z-10">{cat}</span>
-            </span>
-          );
-        })}
+      <div className="mb-3">
+        <div className="text-gray-400 text-[10px] uppercase tracking-wide mb-1.5">Categories</div>
+        <div className="flex flex-wrap gap-1.5">
+          {item.category.map((cat) => {
+            const style = getCategoryStyle(cat);
+            return (
+              <span
+                key={cat}
+                className="text-white text-[10px] px-2 py-0.5 rounded font-medium relative overflow-hidden transition-all duration-200 hover:scale-105 cursor-default"
+                style={{
+                  background: style.gradient,
+                  border: `1px solid ${style.border}`,
+                  boxShadow: style.glow,
+                  textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = `${style.glow}, 0 0 12px ${style.border}`;
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = style.glow;
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+              >
+                <span className="relative z-10">{cat}</span>
+              </span>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Weight and Value */}
-      <div className="flex justify-between text-sm">
+      {/* Stats Section */}
+      <div className="border-t border-dark-border/50 pt-3 space-y-2">
         {item.weight !== undefined && (
-          <div className="text-gray-300">
-            <span className="text-gray-400">Weight:</span>{" "}
-            <span className="text-white font-semibold">{item.weight}</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-gray-400 text-xs">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l4-4m4 4l-4-4m4 4l4 4m-4-4l-4 4m4-4l4-4" />
+              </svg>
+              <span>Weight</span>
+            </div>
+            <span className="text-white font-semibold text-sm">{item.weight}</span>
           </div>
         )}
-        <div className="text-gray-300">
-          <span className="text-gray-400">Value:</span>{" "}
-          <span className="text-accent-orange font-semibold">{item.value.toLocaleString()}</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-gray-400 text-xs">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Value</span>
+          </div>
+          <span className="text-accent-orange font-semibold text-sm">Φ{item.value.toLocaleString()}</span>
         </div>
       </div>
     </div>
