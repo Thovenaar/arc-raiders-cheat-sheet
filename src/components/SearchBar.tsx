@@ -11,7 +11,7 @@ export default function SearchBar({ onSearch, placeholder = "Search items..." }:
   useEffect(() => {
     const handler = setTimeout(() => {
       onSearch(searchTerm);
-    }, 300);
+    }, 50);
 
     return () => {
       clearTimeout(handler);

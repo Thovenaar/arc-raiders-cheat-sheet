@@ -58,7 +58,13 @@ export default function CategorySection({
           }`}
       >
         {items.map((item, index) => (
-          <ItemCard key={`${item.name}-${index}`} item={item} />
+          <div
+            key={`${item.name}-${index}`}
+            className="animate-item-card"
+            style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
+          >
+            <ItemCard item={item} />
+          </div>
         ))}
       </div>
     </section>
