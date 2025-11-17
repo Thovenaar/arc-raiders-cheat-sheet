@@ -43,6 +43,16 @@ export default defineConfig([
 ])
 ```
 
+## Image optimization
+
+PNG assets in `src/assets/img` can be recompressed in place with:
+
+```
+npm run optimize-images
+```
+
+The script uses `sharp` to apply high-effort palette compression and will skip rewrites when no savings are possible.
+
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
