@@ -144,6 +144,8 @@ export default function ItemCard({ item }: ItemCardProps) {
             <img
               src={getImagePath(item.image)}
               alt={item.name}
+              loading="lazy"
+              decoding="async"
               className="relative max-h-[120px] max-w-[120px] w-auto h-auto object-contain drop-shadow-lg transition-all duration-300 group-hover/image:scale-110 group-hover/image:drop-shadow-2xl"
               style={{
                 filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.1))",
