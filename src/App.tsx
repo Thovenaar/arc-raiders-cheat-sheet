@@ -188,7 +188,7 @@ function App() {
 
         {/* Main content area */}
         <div className="flex-1 max-w-7xl mx-auto px-4 py-8">
-          <Header onSearch={setSearchTerm} />
+          <Header />
 
           <CategoryFilter
             selectedCategories={selectedCategories}
