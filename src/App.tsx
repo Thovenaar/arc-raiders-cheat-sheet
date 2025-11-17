@@ -211,7 +211,7 @@ function App() {
             </button>
           </div>
 
-          {/* <QuickTips tips={quickTips} /> */}
+          <QuickTips tips={quickTips} />
 
           <CategorySection
             id="keep-for-quests"

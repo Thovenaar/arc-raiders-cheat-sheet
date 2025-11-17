@@ -1,10 +1,6 @@
 import SearchBar from "./SearchBar";
 
-interface HeaderProps {
-  onSearch: (term: string) => void;
-}
-
-export default function Header({ onSearch }: HeaderProps) {
+export default function Header() {
   return (
     <header className="mb-8">
       <div className="mb-6">
@@ -19,7 +15,7 @@ export default function Header({ onSearch }: HeaderProps) {
   );
 }
 
-export function StickySearchBar({ onSearch }: HeaderProps) {
+export function StickySearchBar({ onSearch }: { onSearch: (term: string) => void }) {
   return (
     <div className="sticky top-0 z-50 bg-dark-bg/95 backdrop-blur-sm border-b border-dark-border py-4 mb-6 -mx-4 px-4">
       <div className="max-w-7xl mx-auto">
